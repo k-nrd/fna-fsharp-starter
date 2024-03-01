@@ -13,7 +13,7 @@
   <PropertyGroup>
     <VendorDir>$(ProjectDir)../Vendor/</VendorDir>
   </PropertyGroup>
-  <Target BeforeTargets="Build" Condition="!Exists('$(VendorDir)/FNALibs')" Name="DownloadFNALibs">
+  <Target BeforeTargets="Build" Condition="!Exists('$(VendorDir)FNALibs')" Name="DownloadFNALibs">
     <!-- Download FNALibs -->
     <Message Importance="High" Text="Downloading fnalibs..."></Message>
     <DownloadFile DestinationFolder="$(VendorDir)" SourceUrl="https://fna.flibitijibibo.com/archive/fnalibs.tar.bz2">
