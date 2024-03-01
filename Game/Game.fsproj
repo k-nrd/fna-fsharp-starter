@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Game.fs"></Compile>
+    <Compile Include="Program.fs"></Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Vendor\FNA\FNA.Core.csproj"></ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VendorDir>$(ProjectDir)../Vendor/</VendorDir>
+  </PropertyGroup>
+  <Target BeforeTargets="Build" Condition="!Exists('$(VendorDir)/FNALibs')" Name="DownloadFNALibs">
+    <!-- Download FNALibs -->
+    <Message Importance="High" Text="Downloading fnalibs..."></Message>
+    <DownloadFile DestinationFolder="$(VendorDir)" SourceUrl="https://fna.flibitijibibo.com/archive/fnalibs.tar.bz2">
+      <Output ItemName="FNALibsTar" TaskParameter="DownloadedFile"></Output>
+    </DownloadFile>
+    <!-- Create FNALibs directory -->
+    <Message Importance="High" Text="Creating Vendor/FNALibs directory..."></Message>
+    <MakeDir Directories="$(VendorDir)FNALibs"></MakeDir>
+    <!-- Untar into directory -->
+    <Message Importance="High" Text="Extracting fnalibs into Vendor/FNALibs directory..."></Message>
+    <Exec Command="tar -xf @(FNALibsTar)" WorkingDirectory="$(VendorDir)FNALibs"></Exec>
+    <!-- Delete downloaded tar file -->
+    <Message Importance="High" Text="Deleting fnalibs tar file..."></Message>
+    <Delete Files="@(FNALibsTar)"></Delete>
+  </Target>
+  <Target AfterTargets="Build" Name="CopyFNALibsToOutput">
+    <ItemGroup>
+      <!-- Because this ItemGroup is inside the target, this will enumerate
+           all files just before calling Copy. If the ItemGroup were outside
+           the target , it would enumerate the files during evaluation, before
+           the build starts, which may miss files created during the build. -->
+      <FNALibs Include="$(VendorDir)FNALibs/lib64/*"></FNALibs>
+    </ItemGroup>
+    <Message Importance="High" Text="Copying fnalibs to output dir..."></Message>
+    <Copy DestinationFolder="$(ProjectDir)$(OutDir)" SourceFiles="@(FNALibs)"></Copy>
+  </Target>
+</Project>

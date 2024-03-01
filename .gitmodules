@@ -1,0 +1,3 @@
+[submodule "Vendor/FNA"]
+	path = Vendor/FNA
+	url = https://github.com/FNA-XNA/FNA
